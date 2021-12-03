@@ -25,7 +25,14 @@ source scripts/common.sh
 source test/externalTests/common.sh
 
 verify_input "$@"
-BINARY_PATH="$1"
+BINARY_TYPE="$1"
+BINARY_PATH="$2"
+
+# Truffle can only be configured to use the global `solc` native binary.
+# Replace it with a funtion that runs our custom binary.
+function solc { "$(realpath "$__SOLC_BINARY_PATH")" "$@"; }
+export -f solc
+export __SOLC_BINARY_PATH="$BINARY_PATH"
 
 function compile_fn { yarn run provision:token:contracts; }
 function test_fn { yarn run test:contracts; }
@@ -42,11 +49,11 @@ function colony_test
     selected_optimizer_levels=$(circleci_select_steps "$(seq "$min_optimizer_level" "$max_optimizer_level")")
     print_optimizer_levels_or_exit "$selected_optimizer_levels"
 
-    setup_solcjs "$DIR" "$BINARY_PATH"
+    setup_solc "$DIR" "$BINARY_TYPE" "$BINARY_PATH"
     download_project "$repo" "$branch" "$DIR"
 
     neutralize_package_json_hooks
-    force_truffle_compiler_settings "$config_file" "${DIR}/solc" "$min_optimizer_level"
+    force_truffle_compiler_settings "$config_file" "$BINARY_TYPE" "${DIR}/solc" "$min_optimizer_level"
     yarn
     git submodule update --init
 
@@ -56,10 +63,10 @@ function colony_test
     cd ..
 
     replace_version_pragmas
-    force_solc_modules "${DIR}/solc"
+    [[ $BINARY_TYPE == solcjs ]] && force_solc_modules "${DIR}/solc"
 
     for level in $selected_optimizer_levels; do
-        truffle_run_test "$config_file" "${DIR}/solc" "$level" compile_fn test_fn
+        truffle_run_test "$config_file" "$BINARY_TYPE" "${DIR}/solc" "$level" compile_fn test_fn
     done
 }
 
