@@ -1,4 +1,4 @@
-.. index:: operator
+.. index:: ! operator
 
 Operators
 =========
