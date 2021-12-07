@@ -1042,10 +1042,10 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - run:
-          name: Install dependencies
+          name: Install lsof
           command: |
             # lsof is used by Colony in its stop-blockchain-client.sh script
-            sudo apt-get -qy install lsof
+            sudo apt-get --quiet --assume-yes install lsof
       - when:
           condition:
             equal: [<< parameters.binary_type >>, "solcjs"]
@@ -1058,6 +1058,7 @@ jobs:
           condition:
             equal: [<< parameters.binary_type >>, "native"]
           steps:
+            - run: sudo apt-get --quiet --assume-yes install cvc4
             - run:
                 name: External <<parameters.project>> tests (native)
                 command: |
