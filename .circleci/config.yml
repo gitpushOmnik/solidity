@@ -1051,14 +1051,16 @@ jobs:
           command: |
             test/externalTests/<<parameters.project>>.sh solcjs /tmp/workspace/soljson.js
       - when:
-          equal: [<< parameters.binary_type >>, "solcjs"]
+          condition:
+            equal: [<< parameters.binary_type >>, "solcjs"]
           steps:
             - run:
                 name: External <<parameters.project>> tests (solcjs)
                 command: |
                   test/externalTests/<<parameters.project>>.sh solcjs /tmp/workspace/soljson.js
       - when:
-          equal: [<< parameters.binary_type >>, "native"]
+          condition:
+            equal: [<< parameters.binary_type >>, "native"]
           steps:
             - run:
                 name: External <<parameters.project>> tests (native)
