@@ -1046,10 +1046,6 @@ jobs:
           command: |
             # lsof is used by Colony in its stop-blockchain-client.sh script
             sudo apt-get -qy install lsof
-      - run:
-          name: External <<parameters.project>> tests
-          command: |
-            test/externalTests/<<parameters.project>>.sh solcjs /tmp/workspace/soljson.js
       - when:
           condition:
             equal: [<< parameters.binary_type >>, "solcjs"]
