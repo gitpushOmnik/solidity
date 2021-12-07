@@ -29,7 +29,7 @@ BINARY_TYPE="$1"
 BINARY_PATH="$2"
 
 # Truffle can only be configured to use the global `solc` native binary.
-# Replace it with a funtion that runs our custom binary.
+# Replace it with a function that runs our custom binary.
 function solc { "$(realpath "$__SOLC_BINARY_PATH")" "$@"; }
 export -f solc
 export __SOLC_BINARY_PATH="$BINARY_PATH"
