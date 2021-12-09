@@ -28,12 +28,6 @@ verify_input "$@"
 BINARY_TYPE="$1"
 BINARY_PATH="$2"
 
-# Truffle can only be configured to use the global `solc` native binary.
-# Replace it with a function that runs our custom binary.
-function solc { "$(realpath "$__SOLC_BINARY_PATH")" "$@"; }
-export -f solc
-export __SOLC_BINARY_PATH="$BINARY_PATH"
-
 function compile_fn { npx truffle compile; }
 function test_fn { npm test; }
 
@@ -51,6 +45,7 @@ function gnosis_safe_test
 
     setup_solc "$DIR" "$BINARY_TYPE" "$BINARY_PATH"
     download_project "$repo" "$branch" "$DIR"
+    [[ $BINARY_TYPE == native ]] && replace_global_solc "$BINARY_PATH"
 
     sed -i 's|github:gnosis/mock-contract#sol_0_5_0|github:solidity-external-tests/mock-contract#master_080|g' package.json
     sed -i -E 's|"@gnosis.pm/util-contracts": "[^"]+"|"@gnosis.pm/util-contracts": "github:solidity-external-tests/util-contracts#solc-7_080"|g' package.json

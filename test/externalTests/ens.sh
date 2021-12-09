@@ -28,12 +28,6 @@ verify_input "$@"
 BINARY_TYPE="$1"
 BINARY_PATH="$2"
 
-# Truffle can only be configured to use the global `solc` native binary.
-# Replace it with a function that runs our custom binary.
-function solc { "$(realpath "$__SOLC_BINARY_PATH")" "$@"; }
-export -f solc
-export __SOLC_BINARY_PATH="$BINARY_PATH"
-
 function compile_fn { npx truffle compile; }
 function test_fn { npm run test; }
 
@@ -51,6 +45,7 @@ function ens_test
 
     setup_solc "$DIR" "$BINARY_TYPE" "$BINARY_PATH"
     download_project "$repo" "$branch" "$DIR"
+    [[ $BINARY_TYPE == native ]] && replace_global_solc "$BINARY_PATH"
 
     # Use latest Truffle. Older versions crash on the output from 0.8.0.
     force_truffle_version ^5.1.55

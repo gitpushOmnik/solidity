@@ -256,6 +256,18 @@ function optimizer_settings_for_level
     esac
 }
 
+function replace_global_solc
+{
+    local solc_path="$1"
+
+    [[ ! -e solc ]] || fail "A file named 'solc' already exists in '${PWD}'."
+
+    echo "#!/usr/bin/env bash" >> solc
+    echo "$(realpath "$solc_path") \"\$@\"" >> solc
+    chmod +x solc
+    export PATH="$PWD:$PATH"
+}
+
 function truffle_compiler_settings
 {
     local solc_path="$1"

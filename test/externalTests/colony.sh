@@ -28,12 +28,6 @@ verify_input "$@"
 BINARY_TYPE="$1"
 BINARY_PATH="$2"
 
-# Truffle can only be configured to use the global `solc` native binary.
-# Replace it with a function that runs our custom binary.
-function solc { "$(realpath "$__SOLC_BINARY_PATH")" "$@"; }
-export -f solc
-export __SOLC_BINARY_PATH="$BINARY_PATH"
-
 function compile_fn { yarn run provision:token:contracts; }
 function test_fn { yarn run test:contracts; }
 
@@ -51,6 +45,7 @@ function colony_test
 
     setup_solc "$DIR" "$BINARY_TYPE" "$BINARY_PATH"
     download_project "$repo" "$branch" "$DIR"
+    [[ $BINARY_TYPE == native ]] && replace_global_solc "$BINARY_PATH"
 
     neutralize_package_json_hooks
     force_truffle_compiler_settings "$config_file" "$BINARY_TYPE" "${DIR}/solc" "$min_optimizer_level"
