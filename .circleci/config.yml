@@ -1052,7 +1052,7 @@ jobs:
           name: Install lsof
           command: |
             # lsof is used by Colony in its stop-blockchain-client.sh script
-            sudo apt-get --quiet --assume-yes install lsof
+            sudo apt-get --quiet --assume-yes --no-install-recommends install lsof
       - when:
           condition:
             equal: [<< parameters.binary_type >>, "solcjs"]
