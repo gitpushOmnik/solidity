@@ -1063,7 +1063,8 @@ jobs:
           condition:
             equal: [<< parameters.binary_type >>, "native"]
           steps:
-            - run: sudo apt-get --quiet --assume-yes install cvc4
+            # TMP:
+            #- run: sudo apt-get --quiet --assume-yes install cvc4
             - run:
                 name: External <<parameters.project>> tests (native)
                 command: |
