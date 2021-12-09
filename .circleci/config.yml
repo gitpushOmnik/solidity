@@ -671,10 +671,11 @@ jobs:
       MAKEFLAGS: -j 10
 
   b_ubu_static:
-    # Runs 2x faster on large and 3x on xlarge but no other jobs depend on it we can live with medium.
-    <<: *base_ubuntu2004
+    # On large runs 2x faster than on medium. 3x on xlarge.
+    <<: *base_ubuntu2004_xlarge
     environment:
-      MAKEFLAGS: -j 5
+      TERM: xterm
+      MAKEFLAGS: -j 10
       CMAKE_OPTIONS: -DCMAKE_BUILD_TYPE=Release -DUSE_Z3_DLOPEN=ON -DUSE_CVC4=OFF -DSOLC_STATIC_STDLIBS=ON
     steps:
       - checkout
