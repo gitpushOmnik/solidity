@@ -684,6 +684,7 @@ jobs:
           name: strip binary
           command: strip build/solc/solc
       - store_artifacts: *artifacts_solc
+      - persist_to_workspace: *artifacts_executables
       - gitter_notify_failure_unless_pr
 
   b_ubu_codecov:
